@@ -209,12 +209,10 @@ async function getGeminiRecs(searchTitle, searchYear, type, searchImdb, apiKey, 
 		return null;
 	}
 
-	// If recs were found, verify that the first item is the search input by comparing imdb id
-	const foundMedia = recTitles[0];
-	const foundMediaImdb = await titleToImdb(foundMedia?.title, foundMedia?.year, type, metadataSource);
-	if (searchImdb && foundMediaImdb !== searchImdb) {
-		return null;
-	}
+	// Gemini is prompted to echo the searched title as the first line; it is dropped below via
+	// slice(1). We intentionally do NOT discard the whole result when that first line fails to
+	// round-trip to the same IMDb id: obscure or ambiguously-titled media (e.g. several movies
+	// sharing a title) made name-to-imdb return a different id and wiped out valid recommendations.
 
 	// Get IMDB Ids for all the rec titles and add it's placement ranking
 	let recs = await Promise.all(
@@ -293,7 +291,7 @@ async function getCombinedRecs(searchTitle, searchYear, type, searchImdb, apiKey
 
 	// Get recs from all sources. All sources have a timeout to prevent the whole catalog from not showing if
 	// prettier-ignore
-	const timeoutMs = 5000;
+	const timeoutMs = 10000;
 	const [tmdbRecs, traktRecs, simklRecs, geminiRecs, tastediveRecs, watchmodeRecs] = await Promise.all([
 		withTimeout(getTmdbRecs(searchImdb, type, apiKeys.tmdb.key, apiKeys.tmdb.valid, includeTmdbCollection), timeoutMs, "TMDB recs timed out in combined Recs").catch(() => {
 			return [];
