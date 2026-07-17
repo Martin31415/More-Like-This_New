@@ -266,7 +266,10 @@ async function startServer() {
 			}
 
 			let host = req.headers.host;
-			if (host === "bbab4a35b833-more-like-this") {
+			// BeamUp routes the internal short service name (e.g. "<hash>-<project>") to the
+			// app without the ".baby-beamup.club" suffix, which yields an unresolvable install
+			// URL. Restore the suffix when the host has no domain and no port (i.e. not local dev).
+			if (host && !host.includes(".") && !host.includes(":")) {
 				host = host + ".baby-beamup.club";
 			}
 			if (req.body.forCopy === "true") {
