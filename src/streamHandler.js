@@ -38,7 +38,10 @@ async function streamHandler(origin, type, metaId, userConfig, metadataSource) {
 			const appSearchButton = {
 				name: "More Like This",
 				description: `🎬 Show similar movies/series (in app)`,
-				externalUrl: `stremio:///search?search=${searchId}`,
+				// Chrome cannot resolve the host-less `stremio:///search` deep link (empty authority
+				// -> ERR_NAME_NOT_RESOLVED). Give it a dummy host so the browser hands it to the
+				// stremio:// protocol handler; Stremio still routes on the `/search` path.
+				externalUrl: `stremio://app/search?search=${searchId}`,
 			};
 
 			stream.push(appSearchButton);
