@@ -95,7 +95,7 @@ async function generateManifest(apiKeys, combine, catalog_order) {
 
 	const manifest = {
 		id: "community.morelikethis",
-		version: "0.11.6",
+		version: "1.0.0",
 		resources: [
 			"catalog",
 			"stream",
@@ -106,7 +106,7 @@ async function generateManifest(apiKeys, combine, catalog_order) {
 			},
 		],
 		types: ["movie", "series"],
-		name: "More Like This",
+		name: "More Like This v1.0",
 		description: "Shows recommendations from various sources",
 		logo: "https://i.imgur.com/DHKJ7dT.png",
 		idPrefixes: [""],
