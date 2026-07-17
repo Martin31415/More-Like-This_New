@@ -9,18 +9,14 @@
   <a href="https://github.com/rama1997/More-Like-This">
       <img src="https://img.shields.io/badge/status-active-brightgreen?logo=github" alt="Status">
   </a>
-  <a href="https://github.com/rama1997/More-Like-This/releases">
-      <img src="https://img.shields.io/github/v/tag/rama1997/More-Like-This?logo=github" alt="Latest Release">
-  </a>
-  <a href="https://github.com/rama1997/More-Like-This/stargazers">
-      <img src="https://img.shields.io/github/stars/rama1997/More-Like-This?style=flat&logo=github" alt="GitHub Stars">
-  </a>
   <a href="https://github.com/rama1997/More-Like-This/blob/main/LICENSE">
       <img src="https://img.shields.io/github/license/rama1997/More-Like-This" alt="License">
   </a>
 
 </div>
 <br></br>
+
+> Fork of [rama1997/More-Like-This](https://github.com/rama1997/More-Like-This) with a fix for the Gemini catalog (the hardcoded `gemini-2.5-flash-lite` model was retired by Google for new API projects, which silently broke recommendations for new users).
 
 # ✨ What is More Like This?
 
@@ -59,67 +55,21 @@
 # 🚀 Installation
 
 Install the addon directly from:  
-➡️ [https://bbab4a35b833-more-like-this.baby-beamup.club/configure](https://bbab4a35b833-more-like-this.baby-beamup.club/configure)
+➡️ [https://320d3e2541cf-more-like-this-martin.baby-beamup.club/configure](https://320d3e2541cf-more-like-this-martin.baby-beamup.club/configure)
 
 You’ll need API keys for the sources you wish to use. For example, if you want only TMDB recommendations, you only need a TMDB API key.
 Links to obtain free API keys are available on the addon’s configuration page.
-
-## Docker
-
-You can use a prebuilt images from Docker Hub:
-
-```bash
-docker pull raymadev/more-like-this-stremio-addon
-```
-
-Or clone this repo:
-
-```bash
-git clone https://github.com/rama1997/More-Like-This.git
-```
-
-### Docker CLI
-
-1. Build Docker Image
-
-```bash
-docker build -t more-like-this .
-```
-
-2. Run Docker Container
-
-```bash
-docker run -p 8080:3000 more-like-this
-```
-
-Can adjust addon via a `.env` file. See below for environment variables.
-
-```bash
-docker run -p 8080:3000 --env-file .env more-like-this
-```
-
-3. Access the addon's configure page at `localhost:8080`.
-
-### Docker Compose
-
-1. Run following command
-
-```bash
-docker compose up -d
-```
-
-2. Can adjust addon via a `.env` file. See below for environment variables.
 
 ## Running Locally From Source
 
 1. Clone the project repository and set it as the current directory
 
 ```bash
-git clone https://github.com/rama1997/More-Like-This.git
+git clone https://github.com/Martin31415/More-Like-This_New.git
 ```
 
 ```bash
-cd More-Like-This
+cd More-Like-This_New
 ```
 
 2. Create your local environment config by copying the environment example file:
@@ -150,6 +100,8 @@ npm start
 | ----------------- | ------------------------------------------- | ----------------- |
 | ENABLE_LOGGING    | Enable logging for dev                      | `false`           |
 | PORT              | Desired port that addon listens on          | `8080`            |
+| ENCRYPTION_KEY    | 64-char hex key (AES-256) to encrypt user config in the install URL | _(none)_ |
+| GEMINI_MODEL      | Override the Gemini model used              | `gemini-flash-lite-latest` |
 | CACHE_TTL         | Cache TTL (seconds)                         | `259200` (3 Days) |
 | CACHE_MAX_SIZE    | Max size of cache                           | `3000`            |
 | GEMINI_MAX_RESULT | Max number of Gemini AI returns per catalog | `20`              |
@@ -157,6 +109,8 @@ npm start
 | REDIS_HOST        | Redis host                                  |
 | REDIS_PORT        | Redis port                                  |
 | REDIS_DB          | Redis database index                        |
+
+> **Note:** `ENCRYPTION_KEY` must be set when hosting publicly. Without it, the addon cannot read user config and API keys would otherwise travel in clear text in the install URL. Generate one with `openssl rand -hex 32`.
 
 # Configuration
 
@@ -256,10 +210,4 @@ This addon is still a work in progress. While it works well in many scenarios, s
 # 🔓 Security
 
 - User Data Encryption: AES-256 GCM encryption + PBKDF2
-- API Keys: API keys are never stored
-
-## ❤️ Support the Project
-
-If you find this project useful and would like to support its development, you can make a small donation here:
-
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/raymadev)
+- API Keys: API keys are never stored server-side; each user supplies their own keys, which are encrypted into their personal install URL.
