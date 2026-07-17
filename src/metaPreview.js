@@ -19,18 +19,21 @@ async function createMetaPreview(recs, type, apiKeys, metadataSource) {
 	const meta = null;
 
 	if (metadataSource.source === "cinemeta") {
-		const poster = rpdbPoster || (await cinemeta.fetchPoster(imdbId, type));
+		// Fetch the full Cinemeta entry so the tile carries a name/rating (not just a poster).
+		// Without a name, tiles render as blank boxes in Stremio whenever the poster fails to load.
+		const baseMeta = await cinemeta.fetchBaseMetadata(imdbId, type);
+		const poster = rpdbPoster || baseMeta?.poster;
 
 		return poster
 			? {
 					id: imdbId,
 					type: type,
 					poster: poster,
-					background: meta?.background || poster,
-					name: meta?.name,
-					releaseInfo: meta?.releaseInfo,
-					description: meta?.description,
-					imdbRating: meta?.imdbRating,
+					background: baseMeta?.background || poster,
+					name: baseMeta?.name,
+					releaseInfo: baseMeta?.releaseInfo,
+					description: baseMeta?.description,
+					imdbRating: baseMeta?.imdbRating,
 			  }
 			: null;
 	} else if (metadataSource.source === "tmdb") {

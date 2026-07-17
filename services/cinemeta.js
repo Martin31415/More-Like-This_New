@@ -86,5 +86,6 @@ async function fetchFullMetadata(imdbId, type) {
 
 module.exports = {
 	fetchPoster,
+	fetchBaseMetadata,
 	fetchFullMetadata,
 };
