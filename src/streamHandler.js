@@ -37,7 +37,7 @@ async function streamHandler(origin, type, metaId, userConfig, metadataSource) {
 		} else if (button === "app" && enabledStreamButtons.app) {
 			const appSearchButton = {
 				name: "More Like This",
-				description: `Search on App`,
+				description: `🎬 Show similar movies/series (in app)`,
 				externalUrl: `stremio:///search?search=${searchId}`,
 			};
 
@@ -45,7 +45,7 @@ async function streamHandler(origin, type, metaId, userConfig, metadataSource) {
 		} else if (button === "web" && enabledStreamButtons.web) {
 			const webSearchButton = {
 				name: "More Like This",
-				description: `Search on Web`,
+				description: `🎬 Show similar movies/series (in web)`,
 				externalUrl: `https://web.stremio.com/#/search?search=${searchId}`,
 			};
 
