@@ -18,10 +18,11 @@ async function validateAPIKey(apiKey) {
 	};
 
 	try {
-		const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+		const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
+				"x-goog-api-key": apiKey,
 			},
 			body: JSON.stringify(data),
 		});
@@ -43,6 +44,7 @@ async function getGeminiRecs(title, year, mediaType, apiKey) {
 		const model = genAI.getGenerativeModel({
 			model: GEMINI_MODEL,
 			systemInstruction: await getGeminiSystemInstructions(mediaType),
+			generationConfig: { thinkingConfig: { thinkingBudget: 0 } },
 		});
 
 		const cleanedTitle = title.replace(/[^\p{L}\p{N} ]/gu, "");
@@ -53,6 +55,8 @@ async function getGeminiRecs(title, year, mediaType, apiKey) {
 		return await parseGeminiReturn(result.response.text());
 	} catch (error) {
 		logger.error(error.message, null);
+		// Fallback so model/API failures surface even when file logging (ENABLE_LOGGING) is off
+		console.error(`[gemini] getGeminiRecs failed: ${error.message}`);
 		return null;
 	}
 }
